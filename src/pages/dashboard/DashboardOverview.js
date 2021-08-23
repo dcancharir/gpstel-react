@@ -1,5 +1,9 @@
 
 import React,{useEffect} from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCashRegister, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
+import { Col, Row, Button, Dropdown, ButtonGroup } from '@themesberg/react-bootstrap';
+
 import AuthService from "../../services/auth-service";
 export default (props) => {
   useEffect(() => {
@@ -14,8 +18,39 @@ export default (props) => {
   return (
     <>
        <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
-         Hello World!
+       <Dropdown className="btn-toolbar">
+          <Dropdown.Toggle as={Button} variant="primary" size="sm" className="me-2">
+            <FontAwesomeIcon icon={faPlus} className="me-2" />New Task
+          </Dropdown.Toggle>
+          <Dropdown.Menu className="dashboard-dropdown dropdown-menu-left mt-2">
+            <Dropdown.Item className="fw-bold">
+              <FontAwesomeIcon icon={faTasks} className="me-2" /> New Task
+            </Dropdown.Item>
+            <Dropdown.Item className="fw-bold">
+              <FontAwesomeIcon icon={faCloudUploadAlt} className="me-2" /> Upload Files
+            </Dropdown.Item>
+            <Dropdown.Item className="fw-bold">
+              <FontAwesomeIcon icon={faUserShield} className="me-2" /> Preview Security
+            </Dropdown.Item>
+
+            <Dropdown.Divider />
+
+            <Dropdown.Item className="fw-bold">
+              <FontAwesomeIcon icon={faRocket} className="text-danger me-2" /> Upgrade to Pro
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+
+        <ButtonGroup>
+          <Button variant="outline-primary" size="sm">Share</Button>
+          <Button variant="outline-primary" size="sm">Export</Button>
+        </ButtonGroup>
        </div>
+       <Row className="justify-content-md-center">
+        <Col xs={12} sm={6} xl={4} md={12} className="mb-4">
+         Content
+        </Col>
+      </Row>
     </>
   );
 };
