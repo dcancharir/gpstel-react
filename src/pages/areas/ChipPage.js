@@ -3,6 +3,7 @@ import ChipService from '../../services/chip-service'
 import AuthService from "../../services/auth-service"
 import { Col, Row, Button, Dropdown, ButtonGroup } from '@themesberg/react-bootstrap'
 import DataTable from 'react-data-table-component';
+import Swal from 'sweetalert2'
 const initialChip={
     idchip:0,
     operador:'',
@@ -39,8 +40,11 @@ function ChipPage(props) {
         },
         {
             name:'Acciones',
-            sortable:true,
-            cell: (row,index) => <button onClick={handleButtonClick}>Action {row.idchip}</button>,
+            sortable:false,
+            cell: (row,index) => <div>
+                                    <button className='btn btn-primary btn-outline btn-sm' onClick={handleButtonClick}>Editar</button>
+                                    <button className='btn btn-danger btn-outline btn-sm' onClick={handleButtonClick}>Eliminar</button>
+                                </div> ,
         },
         
     ]
@@ -50,9 +54,28 @@ function ChipPage(props) {
         selectAllRowsItem:true,
         selectAllRowsItemText:'Todos'
     }
+    const mostrarAlerta=()=>{
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
+          
+          Toast.fire({
+            icon: 'success',
+            title: 'Listando Registros',
+          })
+    }
     const getChipsJson=() =>{
         ChipService.getChips().then((response)=>{
             setChipList(response.data)
+            mostrarAlerta()
         },
         (error)=>{
             console.log(error)
