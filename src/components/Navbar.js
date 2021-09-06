@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCog, faEnvelopeOpen, faSearch, faSignOutAlt, faUserShield } from "@fortawesome/free-solid-svg-icons";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
-import { Row, Col, Nav, Form, Image, Navbar, Dropdown, Container, ListGroup, InputGroup } from '@themesberg/react-bootstrap';
+import { Row, Col, Nav, Form, Image, Navbar as BootstrapNavBar, Dropdown, Container, ListGroup, InputGroup } from '@themesberg/react-bootstrap';
 
 import NOTIFICATIONS_DATA from "../data/notifications";
 import Profile3 from "../assets/img/team/profile-picture-3.jpg";
 import AuthService from '../services/auth-service'
 
-export default (props) => {
+const Navbar= (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
   const areNotificationsRead = notifications.reduce((acc, notif) => acc && notif.read, true);
 
@@ -49,7 +49,7 @@ export default (props) => {
   };
 
   return (
-    <Navbar variant="dark" expanded className="ps-0 pe-2 pb-0">
+    <BootstrapNavBar variant="dark" expanded className="ps-0 pe-2 pb-0">
       <Container fluid className="px-0">
         <div className="d-flex justify-content-between w-100">
           <div className="d-flex align-items-center">
@@ -118,6 +118,7 @@ export default (props) => {
           </Nav>
         </div>
       </Container>
-    </Navbar>
+    </BootstrapNavBar>
   );
 };
+export default Navbar

@@ -4,13 +4,14 @@ import SimpleBar from 'simplebar-react';
 import { useLocation } from "react-router-dom";
 import { CSSTransition } from 'react-transition-group';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartPie, faSignOutAlt, faTable, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faTable, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Nav, Badge, Image, Button, Dropdown, Accordion, Navbar } from '@themesberg/react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { Routes } from "../routes";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
+
 export default (props = {}) => {
   const location = useLocation();
   const { pathname } = location;
@@ -47,7 +48,6 @@ export default (props = {}) => {
     const classNames = badgeText ? "d-flex justify-content-start align-items-center justify-content-between" : "";
     const navItemClassName = link === pathname ? "active" : "";
     const linkProps = external ? { href: link } : { as: Link, to: link };
-
     return (
       <Nav.Item className={navItemClassName} onClick={() => setShow(false)}>
         <Nav.Link {...linkProps} target={target} className={classNames}>
@@ -95,13 +95,12 @@ export default (props = {}) => {
               </Nav.Link>
             </div>
             <Nav className="flex-column pt-3 pt-md-0">
-              <NavItem title="Overview" link={Routes.DashboardOverview.path} icon={faChartPie} />
+              <NavItem title="GPSTEL" link={Routes.DashboardOverview.path} image={ReactHero} />
 
-              <Dropdown.Divider className="my-3 border-indigo" />
-
-              <CollapsableNavItem eventKey="tables/" title="Tables" icon={faTable}>
-                {/* <NavItem title="Bootstrap Table" link={Routes.BootstrapTables.path} /> */}
+              <CollapsableNavItem eventKey="areas/" title="Areas" icon={faTable}>
+                <NavItem title="Chip" link={Routes.ChipPage.path} />
               </CollapsableNavItem>
+              <Dropdown.Divider className="my-3 border-indigo" />
             </Nav>
           </div>
         </SimpleBar>

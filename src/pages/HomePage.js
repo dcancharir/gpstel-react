@@ -21,10 +21,8 @@ const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-
-      const timer = setTimeout(() => setLoaded(true), 1000);
-      return () => clearTimeout(timer);
- 
+    const timer = setTimeout(() => setLoaded(true), 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -36,9 +34,20 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-      const timer = setTimeout(() => setLoaded(true), 1000);
-      return () => clearTimeout(timer);
+    const timer = setTimeout(() => setLoaded(true), 1000);
+    return () => clearTimeout(timer);
   }, []);
+
+  const localStorageIsSettingsVisible = () => {
+    return localStorage.getItem('settingsVisible') === 'false' ? false : true
+  }
+
+  const [showSettings, setShowSettings] = useState(localStorageIsSettingsVisible);
+
+  const toggleSettings = () => {
+    setShowSettings(!showSettings);
+    localStorage.setItem('settingsVisible', !showSettings);
+  }
 
   return (
     <Route {...rest} render={props => (
@@ -49,7 +58,7 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
         <main className="content">
           <Navbar />
           <Component {...props} />
-          <Footer />
+          <Footer toggleSettings={toggleSettings} showSettings={showSettings} />
         </main>
       </>
     )}
@@ -57,7 +66,7 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
   );
 };
 
-export default () => (
+const HomePage= () => (
 
   <Switch>
      <RouteWithLoader exact path={Routes.Login.path} component={Login} />
@@ -68,3 +77,4 @@ export default () => (
     <Redirect to={Routes.NotFound.path} />
   </Switch>
 );
+export default HomePage

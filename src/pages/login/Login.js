@@ -2,16 +2,18 @@
 import React,{ useState,useEffect} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
-import { Col, Row, Form, Button, FormCheck, Container, InputGroup, Alert } from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Button, Container, InputGroup } from '@themesberg/react-bootstrap';
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import AuthService from '../../services/auth-service'
+import Swal from 'sweetalert2'
+const initialCredentials={
+  username:'',
+  password:''
+}
 
-export default (props) => {
-  const [username,setUsername]=useState('')
-  const [password,setPassword]=useState('')
-  const [usernameError,setUsernameError]=useState(false)
-  const [passwordError,setPasswordError]=useState(false)
-  const [loginError,setLoginError]=useState(false)
+const Login= (props) => {
+  const [credentials,setCredentials] = useState(initialCredentials)
+
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser()
     if(currentUser){
@@ -21,31 +23,51 @@ export default (props) => {
     return () => {
     }
   }, [])
-  const handleChangeUsername=({target})=>{
-    setUsername(target.value)
-  }
-  const handlePasswordChange=({target})=>{
-    setPassword(target.value)
+  const handleChangeInputs=({target})=>{
+    const newCredentials={
+      ...credentials,
+      [target.name]:target.value
+    }
+    setCredentials(newCredentials)
   }
   const handleLogin=(event)=>{
     event.preventDefault()
-    if(username===''){
-      setUsernameError(true)
+    if(credentials.username===''){
+      mostrarAlerta('error','Nombre de Usuario Obligatorio')
       return false
     }
-    if(password===''){
-      setPasswordError(true)
+    if(credentials.password===''){
+      mostrarAlerta('error','Password Obligatorio')
       return false
     }
-    setUsernameError(false)
-    setPasswordError(false)
-    AuthService.login(username,password).then(()=>{
-       props.history.push('/dashboard')
-       window.location.reload()
+    AuthService.login(credentials.username,credentials.password).then(()=>{
+      mostrarAlerta('success','Bienvenido al Sistema')
+      setTimeout(()=>{
+        props.history.push('/dashboard')
+        window.location.reload()
+      },2000)
+   
     },(error)=>{
-      setLoginError(true)
     })
   }
+  const mostrarAlerta=(icon,message)=>{
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+      
+      Toast.fire({
+        icon: icon,
+        title: message,
+      })
+}
   return (
     <main>
       <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
@@ -56,11 +78,6 @@ export default (props) => {
                 <div className="text-center text-md-center mb-4 mt-md-0">
                   <h3 className="mb-0">Acceso al Sistema</h3>
                 </div>
-                    { loginError &&
-                      <Alert variant={'danger'} style={{marginTop:'5px'}}>
-                          Error al intentar acceder
-                      </Alert>
-                    }
                 <Form className="mt-4">
                   <Form.Group id="username" className="mb-4">
                     <Form.Label>Usuario</Form.Label>
@@ -68,13 +85,8 @@ export default (props) => {
                       <InputGroup.Text>
                         <FontAwesomeIcon icon={faEnvelope} />
                       </InputGroup.Text>
-                      <Form.Control autoFocus required type="text" placeholder="Usuario" onChange={(event)=>handleChangeUsername(event)}/>
+                      <Form.Control autoFocus required type="text" name="username" placeholder="Usuario" onChange={(event)=>handleChangeInputs(event)}/>
                     </InputGroup>
-                    { usernameError &&
-                      <Alert variant={'danger'} style={{marginTop:'5px'}}>
-                          Nombre de Usuario es Obligatorio
-                      </Alert>
-                    }
                     
                   </Form.Group>
                   <Form.Group>
@@ -84,20 +96,9 @@ export default (props) => {
                         <InputGroup.Text>
                           <FontAwesomeIcon icon={faUnlockAlt} />
                         </InputGroup.Text>
-                        <Form.Control required type="password" placeholder="Password" onChange={(event)=>handlePasswordChange(event)} />
+                        <Form.Control required type="password" name="password" placeholder="Password" onChange={(event)=>handleChangeInputs(event)} />
                       </InputGroup>
                     </Form.Group>
-                      { passwordError &&
-                        <Alert variant={'danger'} style={{marginTop:'5px'}}>
-                            Password es Obligatorio
-                        </Alert>
-                      }
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                      <Form.Check type="checkbox">
-                        <FormCheck.Input id="defaultCheck5" className="me-2" />
-                        <FormCheck.Label htmlFor="defaultCheck5" className="mb-0">Recordarme</FormCheck.Label>
-                      </Form.Check>
-                    </div>
                   </Form.Group>
                   <Button variant="primary" type="submit" className="w-100" onClick={(event)=>handleLogin(event)}>
                     Acceder
@@ -111,3 +112,4 @@ export default (props) => {
     </main>
   );
 };
+export default Login

@@ -1,11 +1,11 @@
 
 import React,{useEffect} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCashRegister, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
+import { faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Button, Dropdown, ButtonGroup } from '@themesberg/react-bootstrap';
 
 import AuthService from "../../services/auth-service";
-export default (props) => {
+const DashboardOverview= (props) => {
   useEffect(() => {
     const currentUser=AuthService.getCurrentUser()
     if(!currentUser){
@@ -54,3 +54,4 @@ export default (props) => {
     </>
   );
 };
+export default DashboardOverview
