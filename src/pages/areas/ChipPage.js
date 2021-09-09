@@ -10,7 +10,8 @@ const initialChip={
     idchip:0,
     operador:'',
     tipo_contrato:'',
-    numero:''
+    numero:'',
+    estado:''
 }
 const initialDataList=[{...initialChip}]
 function ChipPage(props) {
@@ -18,8 +19,87 @@ function ChipPage(props) {
     const [chip,setChip]=useState(initialChip)
     const [showModal, setModalShow] = useState(false);
 
+    const dataTableColums=[
+        {
+            name:'Id',
+            selector:row=>row.idchip,
+            sortable:false,
+        },
+        {
+            name:'Operador',
+            selector:row=>row.operador,
+            sortable:true,
+        },
+        {
+            name:'Tipo Contrato',
+            selector:row=>row.tipo_contrato,
+            sortable:true,
+        },
+        {
+            name:'Numero',
+            selector:row=>row.numero,
+            sortable:true,
+        },
+        {
+            name:'Estado',
+            sortable:false,
+            cell:(row,index)=>{
+                return(
+                <>
+                    <select className="form-control input-sm input-lg" onChange={(event)=>handleChangeState(event,row.idchip)} defaultValue={row.estado}>
+                        <option value="A">Activo</option>
+                        <option value="I">Inactivo</option>
+                    </select>
+                </>)
+            }
+
+        },
+        {
+            name:'Acciones',
+            sortable:false,
+            cell: (row,index) => <div>
+                                    <button className="btn btn-outline-primary btn-sm me-1" onClick={()=>handleEditButtonClick(row.idchip)}><FontAwesomeIcon icon={faEdit} /></button>
+                                    <button className="btn btn-outline-danger btn-sm" onClick={()=>handleDeleteButtonClick(row.idchip)}><FontAwesomeIcon icon={faTrashAlt} /></button>
+                                </div> ,
+        },
+        
+    ]
+    const paginationOptions={
+        rowsPerPageText:'Filas por Página',
+        rangeSeparatorText:'de',
+        selectAllRowsItem:true,
+        selectAllRowsItemText:'Todos'
+    }
     const handleModalClose = () => setModalShow(false);
     const handleModalShow = () => setModalShow(true);
+    const showAlert=(icon,message)=>{
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
+          
+          Toast.fire({
+            icon: icon,
+            title: message,
+          })
+    }
+    const getChipsJson=() =>{
+        ChipService.getChips().then((response)=>{
+            const newChipList=response.data
+            setChipList(newChipList)
+            showAlert('success','Listando Registros')
+        },
+        (error)=>{
+            showAlert('error','No se puedieron listar los registros')
+        })
+    }
     const handleSaveChanges=(chip)=>{
         if(chip.numero===''){
             showAlert('warning','Número es obligatorio')
@@ -50,12 +130,12 @@ function ChipPage(props) {
                 }
                 else{
                     const newChipList=chipList.map(item=>{
-                        // item.idchip===chip.idchip?chip:item
-                        if(item.idchip===chip.idchip){
-                            return chip
-                        }else{
-                            return item
-                        }
+                        return  item.idchip===chip.idchip?chip:item
+                        // if(item.idchip===chip.idchip){
+                        //     return chip
+                        // }else{
+                        //     return item
+                        // }
                     })
                     setChipList(newChipList)
                 }
@@ -66,71 +146,6 @@ function ChipPage(props) {
         },
         (error)=>{
             showAlert('error','No se pudo editar el registro')
-        })
-    }
-    const dataTableColums=[
-        {
-            name:'Id',
-            selector:row=>row.idchip,
-            sortable:false,
-        },
-        {
-            name:'Operador',
-            selector:row=>row.operador,
-            sortable:true,
-        },
-        {
-            name:'Tipo Contrato',
-            selector:row=>row.tipo_contrato,
-            sortable:true,
-        },
-        {
-            name:'Numero',
-            selector:row=>row.numero,
-            sortable:true,
-        },
-        {
-            name:'Acciones',
-            sortable:false,
-            cell: (row,index) => <div>
-                                    <button className="btn btn-outline-primary btn-sm me-1" onClick={()=>handleEditButtonClick(row.idchip)}><FontAwesomeIcon icon={faEdit} /></button>
-                                    <button className="btn btn-outline-danger btn-sm" onClick={()=>handleDeleteButtonClick(row.idchip)}><FontAwesomeIcon icon={faTrashAlt} /></button>
-                                </div> ,
-        },
-        
-    ]
-    const paginationOptions={
-        rowsPerPageText:'Filas por Página',
-        rangeSeparatorText:'de',
-        selectAllRowsItem:true,
-        selectAllRowsItemText:'Todos'
-    }
-    const showAlert=(icon,message)=>{
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-          })
-          
-          Toast.fire({
-            icon: icon,
-            title: message,
-          })
-    }
-    const getChipsJson=() =>{
-        ChipService.getChips().then((response)=>{
-            const newChipList=response.data
-            setChipList(newChipList)
-            showAlert('success','Listando Registros')
-        },
-        (error)=>{
-            showAlert('error','No se puedieron listar los registros')
         })
     }
     const handleNewButtonClick=()=>{
@@ -151,7 +166,18 @@ function ChipPage(props) {
         })
     }
     const handleDeleteButtonClick=(idchip)=>{
-        console.log('click Delete' +idchip)
+        const deletedChip={
+            estado:'E',
+            idchip:idchip
+        }
+        ChipService.editStateofChipJson(deletedChip).then((response)=>{
+            if(response.data){
+                showAlert('success','Registro Eliminado')
+                const newChipList=chipList.filter(item=>item.idchip!==deletedChip.idchip)
+                setChipList(newChipList)
+            }
+        })
+
     }
     const handleChangeInput=({target})=>{
         const newChip = {
@@ -159,10 +185,30 @@ function ChipPage(props) {
         }
         setChip(newChip)
     }
-    // const handleChange = useCallback(state => {
-	// 	setSelectedRows(state.selectedRows);
-    //     console.log(state.selectedRows)
-	// }, []);
+    const handleChangeState=({target},idchip)=>{
+        const editedChip={
+            ...initialChip,
+            estado:target.value,
+            idchip:idchip,
+        }
+        ChipService.editStateofChipJson(editedChip).then((response)=>{
+            if(response.data){
+                showAlert('success','Estado Editado')
+                const newChipList=chipList.map(item=>{
+                    if(item.idchip===editedChip.idchip){
+                        const newChip={
+                            ...item,
+                            estado:target.value
+                        }
+                        return newChip
+                    }else{
+                        return item
+                    }
+                })
+                setChipList(newChipList)
+            }
+        })
+    }
     useEffect(()=>{
         if(!AuthService.getCurrentUser()){
             props.history.push('/')
