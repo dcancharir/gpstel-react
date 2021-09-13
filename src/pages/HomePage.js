@@ -16,6 +16,7 @@ import Preloader from "../components/Preloader";
 import Login from "./login/Login";
 import NotFound from "./dashboard/NotFound";
 import ChipPage from './areas/ChipPage';
+import GpsPage from './areas/GpsPage';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -74,6 +75,7 @@ const HomePage= () => (
 
      <RouteWithSidebar exact path={Routes.DashboardOverview.path} component={DashboardOverview} />
      <RouteWithSidebar exact path={Routes.ChipPage.path} component={ChipPage} />
+     <RouteWithSidebar exact path={Routes.GpsPage.path} component={GpsPage} />
     <Redirect to={Routes.NotFound.path} />
   </Switch>
 );

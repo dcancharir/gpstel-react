@@ -18,7 +18,6 @@ function ChipPage(props) {
     const [chipList,setChipList]=useState(initialDataList)
     const [chip,setChip]=useState(initialChip)
     const [showModal, setModalShow] = useState(false);
-
     const dataTableColums=[
         {
             name:'Id',
@@ -46,7 +45,7 @@ function ChipPage(props) {
             cell:(row,index)=>{
                 return(
                 <>
-                    <select className="form-control input-sm input-lg" onChange={(event)=>handleChangeState(event,row.idchip)} defaultValue={row.estado}>
+                    <select className="form-control input-sm input-lg" onChange={(event)=>handleChangechipState(event,row.idchip)} defaultValue={row.estado}>
                         <option value="A">Activo</option>
                         <option value="I">Inactivo</option>
                     </select>
@@ -185,7 +184,7 @@ function ChipPage(props) {
         }
         setChip(newChip)
     }
-    const handleChangeState=({target},idchip)=>{
+    const handleChangechipState=({target},idchip)=>{
         const editedChip={
             ...initialChip,
             estado:target.value,

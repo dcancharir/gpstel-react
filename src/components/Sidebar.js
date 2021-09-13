@@ -99,6 +99,7 @@ export default (props = {}) => {
 
               <CollapsableNavItem eventKey="areas/" title="Areas" icon={faTable}>
                 <NavItem title="Chip" link={Routes.ChipPage.path} />
+                <NavItem title="Gps" link={Routes.GpsPage.path} />
               </CollapsableNavItem>
               <Dropdown.Divider className="my-3 border-indigo" />
             </Nav>

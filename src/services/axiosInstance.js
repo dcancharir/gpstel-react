@@ -27,9 +27,8 @@ const axiosInstance = axios.create({
     (res) => {
         return res;
     },
-    (err,status) => {
-        // localStorage.removeItem("user")
-        // window.location.href = '/login';
+    async (err) => {
+      return Promise.reject(err)
     }
   );
   export default axiosInstance
