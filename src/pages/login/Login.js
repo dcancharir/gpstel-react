@@ -48,6 +48,8 @@ const Login= (props) => {
       },2000)
    
     },(error)=>{
+      console.log(error)
+      mostrarAlerta('error','Error')
     })
   }
   const mostrarAlerta=(icon,message)=>{

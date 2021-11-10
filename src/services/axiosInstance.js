@@ -19,15 +19,17 @@ const axiosInstance = axios.create({
       return config;
     },
     (error) => {
+      console.log(error)
       return Promise.reject(error);
     }
   );
   
   axiosInstance.interceptors.response.use(
     (res) => {
+      console.log(res)
         return res;
     },
-    async (err) => {
+    (err) => {
       return Promise.reject(err)
     }
   );

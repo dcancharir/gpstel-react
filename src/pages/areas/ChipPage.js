@@ -6,6 +6,8 @@ import DataTable from 'react-data-table-component';
 import Swal from 'sweetalert2'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt,faEdit } from '@fortawesome/free-solid-svg-icons';
+import authHeader from '../../services/auth-header'
+const authToken=authHeader()
 const initialChip={
     idchip:0,
     operador:'',
@@ -90,14 +92,25 @@ function ChipPage(props) {
           })
     }
     const getChipsJson=() =>{
-        ChipService.getChips().then((response)=>{
-            const newChipList=response.data
-            setChipList(newChipList)
-            showAlert('success','Listando Registros')
-        },
-        (error)=>{
-            showAlert('error','No se puedieron listar los registros')
-        })
+        var url = 'http://localhost:53438/api/chip/getjson';
+
+        fetch(url, {
+        method: 'get', // or 'PUT'
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization':authToken.Authorization
+        }
+        }).then(res => console.log(JSON.stringify(res)))
+        // .catch(error => console.error(JSON.stringify(error)))
+        // .then((response,error) => console.log(JSON.stringify(response,error)));
+        // ChipService.getChips().then((response)=>{
+        //     const newChipList=response.data
+        //     setChipList(newChipList)
+        //     showAlert('success','Listando Registros')
+        // },
+        // (error)=>{
+        //     showAlert('error','No se puedieron listar los registros')
+        // })
     }
     const handleSaveChanges=(chip)=>{
         if(chip.numero===''){
